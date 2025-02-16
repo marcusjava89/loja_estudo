@@ -15,7 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jdev.mentoria.lojavirtual.enums.TipoEndereco;
+import jdev.estudo.spring.enums.TipoEndereco;
 
 @Entity
 @Table(name="endereco")

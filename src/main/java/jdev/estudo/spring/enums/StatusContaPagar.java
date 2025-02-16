@@ -1,4 +1,4 @@
-package jdev.mentoria.lojavirtual.enums;
+package jdev.estudo.spring.enums;
 
 public enum StatusContaPagar {
 

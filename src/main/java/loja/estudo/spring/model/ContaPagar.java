@@ -19,7 +19,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jdev.mentoria.lojavirtual.enums.StatusContaPagar;
+import jdev.estudo.spring.enums.StatusContaPagar;
 
 @Entity
 @Table(name = "conta_pagar")
