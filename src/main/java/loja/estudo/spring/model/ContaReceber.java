@@ -19,8 +19,8 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jdev.estudo.spring.enums.StatusContaPagar;
-import jdev.estudo.spring.enums.StatusContaReceber;
+import loja.estudo.spring.enums.StatusContaPagar;
+import loja.estudo.spring.enums.StatusContaReceber;
 
 @Entity
 @Table(name = "conta_receber")

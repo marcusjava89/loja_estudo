@@ -1,4 +1,4 @@
-package jdev.estudo.spring.enums;
+package loja.estudo.spring.enums;
 
 public enum StatusContaPagar {
 
