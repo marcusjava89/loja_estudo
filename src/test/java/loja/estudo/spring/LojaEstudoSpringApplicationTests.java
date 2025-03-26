@@ -5,12 +5,22 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import junit.framework.TestCase;
 import loja.estudo.spring.controller.AcessoController;
 import loja.estudo.spring.model.Acesso;
 import loja.estudo.spring.repository.AcessoRepository;
-import loja.estudo.spring.service.AcessoService;
 
 @SpringBootTest(classes = LojaEstudoSpringApplication.class)
 public class LojaEstudoSpringApplicationTests extends TestCase{/*Biblioteca JUnit3 baixada.*/
@@ -21,7 +31,70 @@ public class LojaEstudoSpringApplicationTests extends TestCase{/*Biblioteca JUni
 	@Autowired
 	private AcessoRepository acessoRepository;
 	
-	@Test /*Anotação para rodar o teste.*/
+	@Autowired
+	private WebApplicationContext wac; // Para o objeto mockMvc
+	
+	@Test
+	public void testRestApiCadastroAcesso() throws JsonProcessingException, Exception {
+		DefaultMockMvcBuilder builder = MockMvcBuilders.webAppContextSetup(this.wac);
+		MockMvc mockMvc = builder.build(); // objeto mock.
+		
+		Acesso acesso = new Acesso();
+		acesso.setDescricao("ROLE_CADASTRO_ACESSO");
+		/*Não precisa salvar, pois o mock fará isso pra gente.*/
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		ResultActions retornoApi = mockMvc
+										.perform(MockMvcRequestBuilders.post("/salvarAcesso")
+										.content(objectMapper.writeValueAsString(acesso))
+										.accept(MediaType.APPLICATION_JSON)
+										.contentType(MediaType.APPLICATION_JSON));
+		
+		System.out.println("Retorno da API: "+retornoApi.andReturn().getResponse().getContentAsString());
+		
+		Acesso acessoRetorno = objectMapper.readValue( retornoApi.andReturn().getResponse().getContentAsString(), 
+				Acesso.class);
+		
+		assertEquals(acesso.getDescricao(), acessoRetorno.getDescricao());
+		
+	}
+	
+	@Test
+	public void testRestApiDeleteAcesso() throws JsonProcessingException, Exception {
+		DefaultMockMvcBuilder builder = MockMvcBuilders.webAppContextSetup(this.wac);
+		MockMvc mockMvc = builder.build();
+		
+		Acesso acesso = new Acesso();
+		acesso.setDescricao("ROLE_DELETADO");
+		acessoRepository.save(acesso);
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		ResultActions retornoApi = mockMvc.perform(MockMvcRequestBuilders.post("/deleteAcesso")
+										  .content(objectMapper.writeValueAsString(acesso))
+										  .accept(MediaType.APPLICATION_JSON)
+										  .contentType(MediaType.APPLICATION_JSON));
+		
+		System.out.println("Retorno da API: " + retornoApi.andReturn().getResponse().getContentAsString());
+		System.out.println("Retorno do Status: " + retornoApi.andReturn().getResponse().getStatus());
+		
+		assertEquals("Acesso removido com sucesso", retornoApi.andReturn().getResponse().getContentAsString());
+		assertEquals(200, retornoApi.andReturn().getResponse().getStatus());
+	}
+	
+	@Test
+	public void testRestApiDeletePorIDAcesso() throws JsonProcessingException, Exception {
+		
+		DefaultMockMvcBuilder builder = MockMvcBuilders.webAppContextSetup(this.wac);
+		MockMvc mockMvc = builder.build();
+		
+		Acesso acesso = new Acesso();
+		acesso.setDescricao("");
+		
+	}
+	
+	@Test 
 	public void testeCadastraAcesso() {
 		
 		/*Teste de salvar.*/
@@ -53,8 +126,6 @@ public class LojaEstudoSpringApplicationTests extends TestCase{/*Biblioteca JUni
 		assertEquals(true, acessos.size() == 1);
 		
 		acessoRepository.deleteById(acesso.getId());
-		
-		
 		
 	}
 }

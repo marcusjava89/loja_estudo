@@ -20,10 +20,13 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter implements H
 		
 	}
 	
+	/*Para liberar end-points*/
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers(HttpMethod.GET, "/salvarAcesso", "/deleteAcesso")
-		.antMatchers(HttpMethod.POST, "/salvarAcesso", "/deleteAcesso");
+		web.ignoring()
+		.antMatchers(HttpMethod.GET, "/salvarAcesso", "/deleteAcesso", "/obterAcesso/{id}", "/buscarPorDesc/{desc}")
+		.antMatchers(HttpMethod.POST, "/salvarAcesso", "/deleteAcesso")
+		.antMatchers(HttpMethod.DELETE, "/deleteAcessoPorId/{id}");
 	}
 
 }
